@@ -2,6 +2,27 @@
 
 教学向 Next.js 15（App Router）示例站：用表格与独立页面说明 CSR、SSR、SSG、ISR，并附带并行路由实验室与水合问题清单页。
 
+## 首次推送到 GitHub
+
+本地已初始化 Git 并完成首条提交时，按下面做即可（将 `YOUR_USER` / `YOUR_REPO` 换成你的账号与仓库名）。
+
+1. 在 GitHub 新建仓库：**https://github.com/new** → 不要勾选 “Add a README”（避免与本地历史冲突）→ Create repository。
+2. 在项目目录执行：
+
+```bash
+git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
+git push -u origin main
+```
+
+若使用 SSH：
+
+```bash
+git remote add origin git@github.com:YOUR_USER/YOUR_REPO.git
+git push -u origin main
+```
+
+推送完成后，即可在 Vercel **Import** 该仓库，并按下文配置 Deploy Hook 与 Actions Secret。
+
 ## 本地开发
 
 ```bash

@@ -1,6 +1,9 @@
 import { RenderingPage } from "@/components/rendering-page";
 import { fetchInlineSnapshot, formatSnapshotTime, getMode } from "@/lib/rendering-data";
 
+/** 本页仅采用 SSG 取向：构建期静态化；运行时不再为整页做动态渲染。 */
+export const dynamic = "force-static";
+
 export default async function SsgPage() {
   const mode = getMode("SSG");
   const snapshot = await fetchInlineSnapshot("SSG", {

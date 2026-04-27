@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * 本页仅采用 CSR：整页为 Client Component，业务数据在浏览器 hydration 之后请求。
+ */
+
 import { useEffect, useState } from "react";
 
 import { RenderingPage } from "@/components/rendering-page";

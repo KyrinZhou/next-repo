@@ -7,11 +7,15 @@ import "./globals.css";
 const displayFont = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 const serifFont = Source_Serif_4({
   subsets: ["latin"],
   variable: "--font-serif",
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {

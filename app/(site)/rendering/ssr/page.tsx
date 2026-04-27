@@ -1,6 +1,9 @@
 import { RenderingPage } from "@/components/rendering-page";
 import { fetchInlineSnapshot, formatSnapshotTime, getMode } from "@/lib/rendering-data";
 
+/** 本页仅采用 SSR：每次请求在服务端重新执行，HTML 随请求更新。 */
+export const dynamic = "force-dynamic";
+
 export default async function SsrPage() {
   const mode = getMode("SSR");
   const snapshot = await fetchInlineSnapshot("SSR", {

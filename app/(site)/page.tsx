@@ -1,21 +1,23 @@
 import Link from "next/link";
 
+import { StickySiteNav } from "@/components/sticky-site-nav";
 import { RenderingTable } from "@/components/rendering-table";
 import { renderModes } from "@/lib/rendering-data";
 
 export default function HomePage() {
   return (
     <main className="site-shell">
-      <nav className="site-nav">
+      <StickySiteNav className="site-nav">
         <div className="brand-mark">Next.js Rendering Playbook</div>
         <div className="nav-links">
           <Link href="#summary">口诀总览</Link>
           <Link href="/lab">并行路由实验室</Link>
+          <Link href="/rendering">四种模式</Link>
           <Link href="/hydration-pitfalls">水合问题清单</Link>
           <Link href="/next-version-compare">15 / 16 差异</Link>
           <Link href="/rendering/ssr">看一个完整示例</Link>
         </div>
-      </nav>
+      </StickySiteNav>
 
       <section className="hero-panel">
         <div className="hero-copy">

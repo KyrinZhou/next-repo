@@ -2,6 +2,9 @@ import { IsrRuntimeNote } from "@/components/isr-runtime-note";
 import { RenderingPage } from "@/components/rendering-page";
 import { fetchInlineSnapshot, formatSnapshotTime, getMode } from "@/lib/rendering-data";
 
+/** 本页仅采用 ISR：与 fetch 的 revalidate 窗口对齐的增量静态再生成。 */
+export const revalidate = 60;
+
 export default async function IsrPage() {
   const mode = getMode("ISR");
   const snapshot = await fetchInlineSnapshot("ISR", {

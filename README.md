@@ -21,7 +21,7 @@ git remote add origin git@github.com:YOUR_USER/YOUR_REPO.git
 git push -u origin main
 ```
 
-推送完成后，即可在 Vercel **Import** 该仓库，并按下文配置 Deploy Hook 与 Actions Secret。
+推送完成后，在 Vercel **Import** 该仓库并连接 Git；**push 到生产分支即可由 Vercel 自动部署**，无需再配一条会重复触发的 Hook 工作流。
 
 ## 本地开发
 
@@ -39,83 +39,22 @@ npm run build
 npm start
 ```
 
-## 部署到 Vercel（方式三：无交互 / CI）
+## 部署到 Vercel（推荐：连接 Git）
 
-适合在 GitHub Actions、GitLab CI 等流水线里自动部署，避免人工登录 CLI。
+本仓库**不**包含在 `push` 时再次调用 Deploy Hook 的 workflow，避免与 Vercel 自带的 **Git 集成**重复触发生产部署。
 
-### 前置条件
+1. 在 [Vercel Dashboard](https://vercel.com/dashboard) **Import** 仓库（Framework：**Next.js**，构建命令默认 `npm run build`）。
+2. 将 **Production Branch** 设为 `main`（或你的主分支）。
+3. 之后每次 **push 到该分支** 即由 Vercel 拉代码并部署；PR 通常对应 **Preview** 部署。
 
-1. 代码托管在 Git（GitHub / GitLab / Bitbucket 等）。
-2. 在 [Vercel Dashboard](https://vercel.com/dashboard) 中 **Import** 该仓库并完成首次部署（Framework Preset 选 **Next.js**，构建命令使用默认 `npm run build` 即可）。
-3. 之后生产环境更新可完全由下面的 **Deploy Hook** 或 **Token + CLI** 驱动。
+### 可选：仅用 Deploy Hook / CLI（高级）
 
-### 方案 A：Deploy Hook（推荐，最简单）
+若你已连接 Git 自动部署，**不要再**让 GitHub Actions 在「每次 push」里 `curl` Deploy Hook 或执行 `vercel deploy`，否则同一提交会触发**两次**生产构建。
 
-Deploy Hook 会按 Vercel 已绑定的 Git 分支拉取最新提交并触发一次生产构建，流水线里只需发一个 HTTP 请求，**不必**安装 Vercel CLI。
-
-1. 打开 Vercel 项目 → **Settings** → **Git** → **Deploy Hooks**。
-2. 新建 Hook，指定分支（例如 `main`），复制生成的 URL（请当作密钥保管）。
-3. 在 CI 中执行：
+仅在需要「非 Git 事件触发部署」（例如外部系统回调、定时任务）时，再在 Vercel → **Settings** → **Git** → **Deploy Hooks** 创建 Hook，并在**不会与 push 重复的**流水线里调用：
 
 ```bash
-curl -X POST "$VERCEL_DEPLOY_HOOK_URL"
+curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL"
 ```
 
-将 `VERCEL_DEPLOY_HOOK_URL` 存为 CI 密钥（如 GitHub `Secrets`），不要写进仓库。
-
-### 方案 B：`VERCEL_TOKEN` + Vercel CLI
-
-适用于需要在 CI 里显式执行 `vercel deploy` 的场景。
-
-1. 在 Vercel → **Account Settings** → **Tokens** 创建 **Token**，写入 CI 密钥（如 `VERCEL_TOKEN`）。
-2. 在 Vercel 项目 → **Settings** → **General** 查看 **Project ID**；在团队/账号设置中查看 **Team ID**（部分界面显示为 *Team ID* / *Scope*）。分别写入 CI 环境变量，例如：
-   - `VERCEL_ORG_ID`（对应 Team / Personal Account 的 ID）
-   - `VERCEL_PROJECT_ID`
-3. 在流水线中安装依赖并部署生产环境：
-
-```bash
-npm install
-npx vercel@latest deploy --prod --token "$VERCEL_TOKEN"
-```
-
-CLI 会读取 `VERCEL_ORG_ID` 与 `VERCEL_PROJECT_ID`，无需交互式 `vercel link`。
-
-**安全提示：** 勿将 Token、Deploy Hook URL、Team ID 以明文提交到仓库；一律使用 CI 平台的 Secret 功能。
-
-### GitHub Actions（Deploy Hook）
-
-本仓库已包含工作流 [`.github/workflows/deploy-vercel-hook.yml`](.github/workflows/deploy-vercel-hook.yml)：在 `main` 推送时用 Hook 触发生产部署。
-
-在 GitHub 仓库 **Settings → Secrets and variables → Actions** 中新建 Secret，名称为 **`VERCEL_DEPLOY_HOOK_URL`**，值为 Vercel 项目里 Deploy Hooks 生成的完整 URL。
-
-如需在合并前只做预览部署，可在 Vercel 另建指向预览分支的 Hook，并复制为第二份 workflow 或改用 `workflow_dispatch`；也可直接使用 Vercel 连接 Git 后的自动预览部署。
-
-### GitHub Actions 示例（`VERCEL_TOKEN`）
-
-在仓库 Secrets 中配置 `VERCEL_TOKEN`、`VERCEL_ORG_ID`、`VERCEL_PROJECT_ID`。
-
-```yaml
-name: Deploy Production (CLI)
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-      - run: npm ci
-      - name: Deploy to Vercel
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: npx vercel@latest deploy --prod --token "${{ secrets.VERCEL_TOKEN }}"
-```
-
-说明：`npm ci` 会安装含 `next` 在内的依赖；Vercel 侧仍会执行云端构建。若你改为本地 `vercel build` 再 `vercel deploy --prebuilt`，需按 [Vercel 文档](https://vercel.com/docs/cli/deploy#prebuilt) 调整步骤。
+若要在 CI 里用 `vercel deploy --prod`，需配置 `VERCEL_TOKEN` 以及 `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID`；同样避免与 Git 自动部署叠在同一条 push 链路上。详见 [Vercel CLI deploy](https://vercel.com/docs/cli/deploy) 与 [Deploy Hooks](https://vercel.com/docs/deploy-hooks)。

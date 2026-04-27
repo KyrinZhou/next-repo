@@ -620,6 +620,27 @@ img {
   text-underline-offset: 3px;
 }
 
+.version-compare-shell {
+  margin-top: 8px;
+}
+
+.version-compare-table th,
+.version-compare-table td {
+  vertical-align: top;
+}
+
+.version-compare-topic {
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 11rem;
+}
+
+@media (max-width: 960px) {
+  .version-compare-topic {
+    white-space: normal;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

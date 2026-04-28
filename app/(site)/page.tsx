@@ -15,6 +15,7 @@ export default function HomePage() {
           <Link href="/rendering">四种模式</Link>
           <Link href="/hydration-pitfalls">水合问题清单</Link>
           <Link href="/next-version-compare">15 / 16 差异</Link>
+          <Link href="/waterfall-virtual">瀑布流 Virtual</Link>
           <Link href="/rendering/ssr">看一个完整示例</Link>
         </div>
       </StickySiteNav>

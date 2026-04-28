@@ -760,6 +760,96 @@ nav.site-shell.site-nav {
   line-height: var(--leading-ui);
 }
 
+/* --- 瀑布流虚拟列表对比页 /waterfall-virtual --- */
+.wf-compare-intro {
+  margin-bottom: 28px;
+}
+
+.wf-compare-title {
+  margin-top: 0;
+}
+
+.wf-diff-dl {
+  display: grid;
+  grid-template-columns: minmax(140px, auto) 1fr;
+  gap: 10px 18px;
+  margin: 0 0 18px;
+}
+
+.wf-diff-dl dt {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-cold);
+  margin: 0;
+}
+
+.wf-diff-dl dd {
+  margin: 0;
+  color: var(--text);
+  line-height: var(--leading-body);
+}
+
+.wf-diff-ul {
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--muted);
+  line-height: var(--leading-body);
+  display: grid;
+  gap: 10px;
+}
+
+.wf-section {
+  margin-top: 0;
+}
+
+.wf-two-col {
+  display: grid;
+  gap: clamp(28px, 5vw, 44px);
+}
+
+@media (min-width: 920px) {
+  .wf-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.wf-panel h2 {
+  margin-top: 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+}
+
+.wf-muted-lead {
+  color: var(--muted);
+  line-height: var(--leading-body);
+  margin: 0 0 14px;
+}
+
+.wf-snippet-heading {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 20px 0 10px;
+}
+
+@media (max-width: 919px) {
+  .wf-diff-dl {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .wf-diff-dl dt {
+    margin-top: 12px;
+  }
+
+  .wf-diff-dl dt:first-child {
+    margin-top: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

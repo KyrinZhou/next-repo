@@ -1,8 +1,11 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Space_Grotesk, Source_Serif_4 } from "next/font/google";
+import { Space_Grotesk, Source_Serif_4, Geist } from "next/font/google";
 
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const displayFont = Space_Grotesk({
   subsets: ["latin"],
@@ -29,7 +32,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" className={cn("font-sans", geist.variable)}>
       <body className={`${displayFont.variable} ${serifFont.variable}`}>
         {children}
       </body>
